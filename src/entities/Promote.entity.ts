@@ -26,7 +26,7 @@ export class Promote {
     endAt: Date;
 
     @OneToMany(() => Coupon, item => item.promote)
-    counpons: Coupon[];
+    coupons: Coupon[];
 }
 
 @Entity()
@@ -40,7 +40,7 @@ export class Coupon {
     @Column()
     status: string;
 
-    @ManyToOne(() => Promote, item => item.counpons)
+    @ManyToOne(() => Promote, item => item.coupons)
     promote: Promote;
 
     @ManyToOne(() => User, item => item.coupons)

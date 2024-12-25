@@ -1,26 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNumber, IsString } from "class-validator";
 
-export class RoomBookingDto {
-    @ApiProperty()
-    @IsNumber()
-    roomId: number;
-
-    @ApiProperty()
-    @IsString()
-    remark: string;
-}
-
-export class ServiceBookingDto {
-    @ApiProperty()
-    @IsNumber()
-    serviceId: number;
-
-    @ApiProperty()
-    @IsString()
-    remark: string;
-}
-
 export class Booking_Dto {
     @ApiProperty()
     @IsNumber()
@@ -35,16 +15,14 @@ export class Booking_Dto {
     customerPhone: string;
 
     @ApiProperty()
-    @IsString()
-    checkIn: string;
+    checkIn: Date;
 
     @ApiProperty()
-    @IsString()
-    checkOut: string;
+    checkOut: Date;
 
     @ApiProperty({ isArray: true })
-    rooms: RoomBookingDto[];
+    roomIds: number[];
 
     @ApiProperty({ isArray: true })
-    services: ServiceBookingDto[];
+    serviceIds: number[];
 }

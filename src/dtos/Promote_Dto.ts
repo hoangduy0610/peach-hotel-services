@@ -27,9 +27,6 @@ export class Coupon_Dto {
     @ApiProperty()
     code: string;
 
-    @ApiProperty()
-    status: string;
-
     @ApiProperty({ required: false })
     userId?: number;
 }

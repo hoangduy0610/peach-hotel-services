@@ -60,7 +60,11 @@ export class ServiceService {
     }
 
     async deleteServiceTier(id: number): Promise<void> {
-        await this.serviceTierRepository.delete(id);
+        const serviceTier = await this.serviceTierRepository.findOne({
+            where: { id: id },
+            relations: ['services', 'services.bookings', 'services.ratings'],
+        });
+        await this.serviceTierRepository.delete(serviceTier);
     }
 
     async getServices(): Promise<Service[]> {
@@ -111,7 +115,12 @@ export class ServiceService {
     }
 
     async deleteService(id: number): Promise<void> {
-        await this.serviceRepository.delete(id);
+        const service = await this.serviceRepository.findOne({
+            where: { id: id },
+            relations: ['bookings', 'ratings'],
+        });
+
+        await this.serviceRepository.delete(service);
     }
 
     async getServiceById(id: number): Promise<Service> {

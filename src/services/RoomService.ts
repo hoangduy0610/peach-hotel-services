@@ -62,7 +62,12 @@ export class RoomService {
     }
 
     async deleteRoomTier(id: number): Promise<void> {
-        await this.roomTierRepository.delete(id);
+        const roomTier = await this.roomTierRepository.findOne({
+            where: { id: id },
+            relations: ['rooms', 'rooms.bookings', 'rooms.ratings'],
+        });
+
+        await this.roomTierRepository.delete(roomTier);
     }
 
     async getRooms(): Promise<Room[]> {
@@ -113,7 +118,12 @@ export class RoomService {
     }
 
     async deleteRoom(id: number): Promise<void> {
-        await this.roomRepository.delete(id);
+        const room = await this.roomRepository.findOne({
+            where: { id: id },
+            relations: ['bookings', 'ratings'],
+        });
+
+        await this.roomRepository.delete(room);
     }
 
     async getRoomById(id: number): Promise<Room> {
