@@ -76,12 +76,12 @@ export class RoomService {
         return await this.roomRepository.find();
     }
 
-    async filterRoomAvailable(checkInDStr: string, checkOutDStr: string, roomTierId?: number): Promise<Room[]> {
+    async filterRoomAvailable(checkInDStr: string, checkOutDStr: string, roomTierId?: number, roomGuestCapacity?: number): Promise<Room[]> {
         const checkIn = new Date(checkInDStr);
         const checkOut = new Date(checkOutDStr);
 
         const rooms = await this.roomRepository.find({
-            relations: ['bookings'],
+            relations: ['bookings', 'roomTier'],
         });
 
         return rooms.filter(room => {
@@ -93,11 +93,17 @@ export class RoomService {
                 );
             });
 
+            let condition = true;
+
             if (roomTierId) {
-                return room.roomTier.id === roomTierId && bookings.length === 0;
+                condition = condition && room.roomTier.id == roomTierId;
             }
 
-            return bookings.length === 0;
+            if (roomGuestCapacity) {
+                condition = condition && room.roomTier.capacity >= roomGuestCapacity;
+            }
+
+            return condition && bookings.length === 0;
         });
     }
 

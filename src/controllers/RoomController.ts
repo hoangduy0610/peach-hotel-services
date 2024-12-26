@@ -47,8 +47,9 @@ export class RoomController {
     @ApiQuery({ name: 'checkInDate', required: true, type: Date })
     @ApiQuery({ name: 'checkOutDate', required: true, type: Date })
     @ApiQuery({ name: 'roomTierId', required: false })
-    async getAvailableRooms(@Req() req, @Res() res, @Query('checkInDate') checkInDate: string, @Query('checkOutDate') checkOutDate: string, @Query('roomTierId') roomTierId: number) {
-        return res.status(HttpStatus.OK).json(await this.roomService.filterRoomAvailable(checkInDate, checkOutDate, roomTierId));
+    @ApiQuery({ name: 'guestNum', required: false })
+    async getAvailableRooms(@Req() req, @Res() res, @Query('checkInDate') checkInDate: string, @Query('checkOutDate') checkOutDate: string, @Query('roomTierId') roomTierId: number, @Query('guestNum') guestNum: number) {
+        return res.status(HttpStatus.OK).json(await this.roomService.filterRoomAvailable(checkInDate, checkOutDate, roomTierId, guestNum));
     }
 
     @Get('/:id')
