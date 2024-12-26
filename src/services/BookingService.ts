@@ -8,7 +8,7 @@ import { User } from '@/entities/User.entity';
 import { StringUtils } from '@/utils/StringUtils';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, LessThan, MoreThan, Repository } from 'typeorm';
+import { And, In, LessThan, MoreThan, Repository } from 'typeorm';
 
 @Injectable()
 export class BookingService {
@@ -22,7 +22,9 @@ export class BookingService {
     }
 
     async getBookings(): Promise<Booking[]> {
-        return await this.bookingRepository.find();
+        return await this.bookingRepository.find({
+            relations: ['rooms', 'services', 'coupon', 'rooms.roomTier'],
+        });
     }
 
     async createBooking(booking: Booking_Dto): Promise<Booking> {
@@ -38,82 +40,84 @@ export class BookingService {
             where: { id: In(booking.roomIds) },
         });
 
-        if (!rooms) {
+        if (!rooms || rooms.length !== booking.roomIds.length) {
             throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Room not found');
         }
 
         // Check if room is available (each room has a booking)
-        for (const room of rooms) {
-            const isAvailable = await this.bookingRepository.findOne({
-                where: [
-                    {
-                        rooms: room,
-                        checkIn: MoreThan(booking.checkIn),
+        const isAvailable = await this.bookingRepository.findOne({
+            where: [
+                {
+                    rooms: {
+                        id: In(booking.roomIds),
                     },
-                    {
-                        rooms: room,
-                        checkOut: LessThan(booking.checkIn),
-                    }
-                ]
-            });
-
-            if (isAvailable) {
-                throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Room is not available');
-            }
-        }
-
-        const services = await this.serviceRepository.find({
-            where: { id: In(booking.serviceIds) },
+                    checkIn: And(MoreThan(booking.checkIn), LessThan(booking.checkOut)),
+                },
+                {
+                    rooms: {
+                        id: In(booking.roomIds),
+                    },
+                    checkOut: And(MoreThan(booking.checkIn), LessThan(booking.checkOut)),
+                }
+            ]
         });
 
-        if (!services) {
-            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Service not found');
+        if (isAvailable) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Room is not available');
         }
 
-        for (const service of services) {
-            const isAvailable = await this.bookingRepository.findOne({
-                where: [
-                    {
-                        services: service,
-                        checkIn: MoreThan(booking.checkIn),
-                    },
-                    {
-                        services: service,
-                        checkOut: LessThan(booking.checkIn),
-                    }
-                ]
-            });
+        // const services = await this.serviceRepository.find({
+        //     where: { id: In(booking.serviceIds) },
+        // });
 
-            if (isAvailable) {
-                throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Service is not available');
-            }
-        }
+        // if (!services) {
+        //     throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Service not found');
+        // }
 
-        const reservationCode = StringUtils.randomGeneratePassword(8);
+        // for (const service of services) {
+        //     const isAvailable = await this.bookingRepository.findOne({
+        //         where: [
+        //             {
+        //                 services: service,
+        //                 checkIn: MoreThan(booking.checkIn),
+        //             },
+        //             {
+        //                 services: service,
+        //                 checkOut: LessThan(booking.checkIn),
+        //             }
+        //         ]
+        //     });
+
+        //     if (isAvailable) {
+        //         throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Service is not available');
+        //     }
+        // }
+
+        const reservationCode = await StringUtils.randomGeneratePassword(8);
 
         let total = 0;
         for (const room of rooms) {
             total += room.price;
         }
 
-        for (const service of services) {
-            total += service.price;
-        }
+        // for (const service of services) {
+        //     total += service.price;
+        // }
 
         const data = {
             customerName: booking.customerName,
             customerPhone: booking.customerPhone,
             checkIn: booking.checkIn,
             checkOut: booking.checkOut,
-            reservationCode,
+            reservationCode: reservationCode,
             total,
             status: 'PENDING',
             coupon: null,
             user,
             rooms,
-            services
+            // services
         }
-        return await this.bookingRepository.save(booking);
+        return await this.bookingRepository.save(data);
     }
 
     async updateBooking(id: number, booking: Pick<Booking_Dto, 'customerName' | 'customerPhone'>): Promise<Booking> {

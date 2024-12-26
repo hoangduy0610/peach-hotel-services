@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Room } from "./Room.entity";
 import { Service } from "./Service.entity";
 import { User } from "./User.entity";
@@ -37,9 +37,11 @@ export class Booking {
     user: User;
 
     @ManyToMany(() => Room, item => item.bookings)
+    @JoinTable()
     rooms: Room[];
 
     @ManyToMany(() => Service, item => item.bookings)
+    @JoinTable()
     services: Service[];
 }
 
