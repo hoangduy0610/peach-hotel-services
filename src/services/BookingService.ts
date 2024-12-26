@@ -8,7 +8,7 @@ import { User } from '@/entities/User.entity';
 import { StringUtils } from '@/utils/StringUtils';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { And, In, LessThan, MoreThan, Repository } from 'typeorm';
+import { And, In, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
 
 @Injectable()
 export class BookingService {
@@ -51,14 +51,21 @@ export class BookingService {
                     rooms: {
                         id: In(booking.roomIds),
                     },
-                    checkIn: And(MoreThan(booking.checkIn), LessThan(booking.checkOut)),
+                    checkIn: And(MoreThanOrEqual(booking.checkIn), LessThanOrEqual(booking.checkOut)),
                 },
                 {
                     rooms: {
                         id: In(booking.roomIds),
                     },
-                    checkOut: And(MoreThan(booking.checkIn), LessThan(booking.checkOut)),
-                }
+                    checkOut: And(MoreThanOrEqual(booking.checkIn), LessThanOrEqual(booking.checkOut)),
+                },
+                {
+                    rooms: {
+                        id: In(booking.roomIds),
+                    },
+                    checkIn: LessThanOrEqual(booking.checkIn),
+                    checkOut: MoreThanOrEqual(booking.checkOut),
+                },
             ]
         });
 

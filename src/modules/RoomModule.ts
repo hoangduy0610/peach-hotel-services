@@ -3,12 +3,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoomController } from 'src/controllers/RoomController';
 import { RoomService } from '../services/RoomService';
+import { Booking } from '@/entities/Booking.entity';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
             Room,
-            RoomTier
+            RoomTier,
+            Booking,
         ]),
     ],
     controllers: [RoomController],

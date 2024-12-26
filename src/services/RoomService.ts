@@ -1,5 +1,6 @@
 import { ApplicationException } from '@/controllers/ExceptionController';
 import { RoomTier_Dto, Room_Dto } from '@/dtos/Room_Dto';
+import { Booking } from '@/entities/Booking.entity';
 import { Room, RoomTier } from '@/entities/Room.entity';
 import { User } from '@/entities/User.entity';
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -11,6 +12,7 @@ export class RoomService {
     constructor(
         @InjectRepository(RoomTier) private readonly roomTierRepository: Repository<RoomTier>,
         @InjectRepository(Room) private readonly roomRepository: Repository<Room>,
+        @InjectRepository(Booking) private readonly bookingRepository: Repository<Booking>,
     ) {
     }
 
@@ -36,7 +38,7 @@ export class RoomService {
         return await this.roomTierRepository.save(data);
     }
 
-    async updateRoomTier(id:number, roomTier: RoomTier_Dto): Promise<RoomTier> {
+    async updateRoomTier(id: number, roomTier: RoomTier_Dto): Promise<RoomTier> {
         const oldRoomTier = await this.roomTierRepository.findOne({
             where: { id: id },
         });
@@ -74,6 +76,31 @@ export class RoomService {
         return await this.roomRepository.find();
     }
 
+    async filterRoomAvailable(checkInDStr: string, checkOutDStr: string, roomTierId?: number): Promise<Room[]> {
+        const checkIn = new Date(checkInDStr);
+        const checkOut = new Date(checkOutDStr);
+
+        const rooms = await this.roomRepository.find({
+            relations: ['bookings'],
+        });
+
+        return rooms.filter(room => {
+            const bookings = room.bookings.filter(booking => {
+                return (
+                    (checkIn >= booking.checkIn && checkIn <= booking.checkOut) ||
+                    (checkOut >= booking.checkIn && checkOut <= booking.checkOut) ||
+                    (checkIn <= booking.checkIn && checkOut >= booking.checkOut)
+                );
+            });
+
+            if (roomTierId) {
+                return room.roomTier.id === roomTierId && bookings.length === 0;
+            }
+
+            return bookings.length === 0;
+        });
+    }
+
     async createRoom(room: Room_Dto): Promise<Room> {
         const roomTier = await this.roomTierRepository.findOne({
             where: { id: room.roomTierId },
@@ -91,7 +118,7 @@ export class RoomService {
         return await this.roomRepository.save(data);
     }
 
-    async updateRoom(id:number, room: Room_Dto): Promise<Room> {
+    async updateRoom(id: number, room: Room_Dto): Promise<Room> {
         const oldRoom = await this.roomRepository.findOne({
             where: { id: id },
         });

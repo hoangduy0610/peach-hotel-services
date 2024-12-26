@@ -1,6 +1,6 @@
 import { RoomTier_Dto, Room_Dto } from '@/dtos/Room_Dto';
-import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Query, Req, Res } from '@nestjs/common';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RoomService } from 'src/services/RoomService';
 
 @ApiTags('room')
@@ -41,6 +41,14 @@ export class RoomController {
     @Get('/list')
     async getRooms(@Req() req, @Res() res) {
         return res.status(HttpStatus.OK).json(await this.roomService.getRooms());
+    }
+
+    @Get('/filter-available')
+    @ApiQuery({ name: 'checkInDate', required: true, type: Date })
+    @ApiQuery({ name: 'checkOutDate', required: true, type: Date })
+    @ApiQuery({ name: 'roomTierId', required: false })
+    async getAvailableRooms(@Req() req, @Res() res, @Query('checkInDate') checkInDate: string, @Query('checkOutDate') checkOutDate: string, @Query('roomTierId') roomTierId: number) {
+        return res.status(HttpStatus.OK).json(await this.roomService.filterRoomAvailable(checkInDate, checkOutDate, roomTierId));
     }
 
     @Get('/:id')
