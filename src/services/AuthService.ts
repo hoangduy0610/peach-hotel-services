@@ -33,7 +33,7 @@ export class AuthService {
             const res = await this.userRepository.create({
                 email: email,
                 password: hash,
-                role: EnumRoles.ROLE_USER,
+                // role: EnumRoles.ROLE_USER,
                 name: name,
             })
             await this.userRepository.save(res);
@@ -62,7 +62,7 @@ export class AuthService {
         const JWT_Payload = {
             id: user.id,
             email: user.email,
-            role: user.role,
+            // role: user.role,
             name: user.name,
         }
 

@@ -3,6 +3,7 @@ import { Room } from "./Room.entity";
 import { Service } from "./Service.entity";
 import { User } from "./User.entity";
 import { Coupon } from "./Promote.entity";
+import { PaymentHistory } from "./PaymentHistory.entity";
 
 @Entity()
 export class Booking {
@@ -43,6 +44,9 @@ export class Booking {
     @ManyToMany(() => Service, item => item.bookings)
     @JoinTable()
     services: Service[];
+
+    @OneToOne(() => PaymentHistory, item => item.booking)
+    paymentHistory: PaymentHistory;
 }
 
 @Entity()

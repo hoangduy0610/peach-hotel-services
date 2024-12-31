@@ -1,9 +1,10 @@
 
 import { EnumRoles } from '@/enums/EnumRoles';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, OneToMany, VirtualColumn } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Booking, Rating } from './Booking.entity';
 import { Coupon } from './Promote.entity';
+import { PaymentHistory } from './PaymentHistory.entity';
 
 @Entity()
 export class User {
@@ -13,14 +14,20 @@ export class User {
     @Column()
     password: string;
 
-    @Column({ type: "enum", enum: Object.keys(EnumRoles), default: EnumRoles.ROLE_USER })
-    role: EnumRoles;
-
     @Column()
     name: string;
 
     @Column({ unique: true })
     email: string;
+
+    @Column({ type: 'boolean', default: true })
+    isActive: boolean;
+
+    @Column({ default: 0 })
+    peachCoin: number;
+
+    @Column({ default: 0 })
+    peachPoint: number;
 
     @OneToMany(() => Booking, item => item.user)
     bookings: Booking[];
@@ -30,4 +37,7 @@ export class User {
 
     @OneToMany(() => Rating, item => item.user)
     ratings: Rating[];
+
+    @OneToMany(() => PaymentHistory, item => item.user)
+    paymentHistory: PaymentHistory[];
 }
