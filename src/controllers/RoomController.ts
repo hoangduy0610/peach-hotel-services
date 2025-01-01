@@ -1,5 +1,5 @@
 import { RoomTier_Dto, Room_Dto } from '@/dtos/Room_Dto';
-import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Query, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Req, Res } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RoomService } from 'src/services/RoomService';
 
@@ -24,8 +24,8 @@ export class RoomController {
     }
 
     @Put('/tier/:id')
-    async updateRoomTier(@Req() req, @Res() res, @Body() dto: RoomTier_Dto) {
-        return res.status(HttpStatus.OK).json(await this.roomService.updateRoomTier(req.params.id, dto));
+    async updateRoomTier(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: RoomTier_Dto) {
+        return res.status(HttpStatus.OK).json(await this.roomService.updateRoomTier(id, dto));
     }
 
     @Delete('/tier/:id')
