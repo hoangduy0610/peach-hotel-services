@@ -125,6 +125,7 @@ export class PaymentService {
         user.peachPoint += coinToBeAdded;
 
         await this.bookingRepository.save(booking);
+        await this.userRepository.save(user);
         return await this.paymentRepository.save(payment);
     }
 }

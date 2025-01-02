@@ -1,5 +1,5 @@
 import { ApplicationException } from '@/controllers/ExceptionController';
-import { User_CreateDto } from '@/dtos/User_Dto';
+import { User_CreateDto, User_UpdateDto } from '@/dtos/User_Dto';
 import { User } from '@/entities/User.entity';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,7 +33,7 @@ export class UserService {
         return await this.userRepository.save(data);
     }
 
-    async updateUser(id: number, user: User_CreateDto): Promise<User> {
+    async updateUser(id: number, user: User_UpdateDto): Promise<User> {
         const oldUser = await this.userRepository.findOne({
             where: { id: id },
         });

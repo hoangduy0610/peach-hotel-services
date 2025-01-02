@@ -1,4 +1,4 @@
-import { User_CreateDto } from '@/dtos/User_Dto';
+import { User_CreateDto, User_UpdateDto } from '@/dtos/User_Dto';
 import { RoleGuard } from '@/guards/RoleGuard';
 import { UserService } from '@/services/UserService';
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Req, Res, UseGuards } from '@nestjs/common';
@@ -28,7 +28,7 @@ export class UserController {
     }
 
     @Put('/:id')
-    async updateUser(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: User_CreateDto) {
+    async updateUser(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: User_UpdateDto) {
         return res.status(HttpStatus.OK).json(await this.userService.updateUser(id, dto));
     }
 

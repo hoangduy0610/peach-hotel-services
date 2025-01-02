@@ -34,7 +34,7 @@ export class BookingController {
 
     @Get('/list')
     async getBookings(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.bookingService.getBookings());
+        return res.status(HttpStatus.OK).json(await this.bookingService.getBookings(req.user));
     }
 
     @Get('/:id')

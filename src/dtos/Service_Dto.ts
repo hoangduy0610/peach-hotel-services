@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNumber } from "class-validator";
+import { IsString, IsNumber, IsArray } from "class-validator";
 
 export class ServiceTier_Dto {
     @ApiProperty()
@@ -17,6 +17,9 @@ export class ServiceTier_Dto {
     @ApiProperty()
     @IsNumber()
     slot: number;
+
+    @ApiProperty({ type: String, isArray: true })
+    images: string[];
 }
 
 export class Service_Dto {

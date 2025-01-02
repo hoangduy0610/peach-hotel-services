@@ -17,7 +17,9 @@ export class RoomService {
     }
 
     async getRoomTiers(): Promise<RoomTier[]> {
-        return await this.roomTierRepository.find();
+        return await this.roomTierRepository.find({
+            relations: ['rooms']
+        });
     }
 
     async getRoomTierById(id: number): Promise<RoomTier> {

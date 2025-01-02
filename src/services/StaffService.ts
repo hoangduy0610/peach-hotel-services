@@ -1,9 +1,12 @@
+import { Constant } from '@/commons/Constant';
 import { ApplicationException } from '@/controllers/ExceptionController';
 import { Staff_CreateDto } from '@/dtos/Staff_Dto';
 import { Staff } from '@/entities/Staff.entity';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+const bcrypt = require('bcrypt');
 
 @Injectable()
 export class StaffService {
@@ -25,6 +28,7 @@ export class StaffService {
     async createStaff(staff: Staff_CreateDto): Promise<Staff> {
         const data = await this.staffRepository.create({
             ...staff,
+            password: await bcrypt.hashSync(staff.password, Constant.BCRYPT_ROUND)
         });
 
         return await this.staffRepository.save(data);

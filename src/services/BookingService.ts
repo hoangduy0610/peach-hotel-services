@@ -5,9 +5,11 @@ import { Coupon } from '@/entities/Promote.entity';
 import { Room } from '@/entities/Room.entity';
 import { Service } from '@/entities/Service.entity';
 import { User } from '@/entities/User.entity';
+import { EnumRoles } from '@/enums/EnumRoles';
 import { StringUtils } from '@/utils/StringUtils';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as moment from 'moment';
 import { And, In, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
 
 @Injectable()
@@ -21,8 +23,19 @@ export class BookingService {
     ) {
     }
 
-    async getBookings(): Promise<Booking[]> {
+    async getBookings(user): Promise<Booking[]> {
+        if (user?.role && user?.role !== EnumRoles.ROLE_USER) {
+            return await this.bookingRepository.find({
+                relations: ['rooms', 'services', 'coupon', 'rooms.roomTier'],
+            });
+        }
+
         return await this.bookingRepository.find({
+            where: {
+                user: {
+                    id: user.id,
+                }
+            },
             relations: ['rooms', 'services', 'coupon', 'rooms.roomTier'],
         });
     }
@@ -73,13 +86,13 @@ export class BookingService {
             throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Room is not available');
         }
 
-        // const services = await this.serviceRepository.find({
-        //     where: { id: In(booking.serviceIds) },
-        // });
+        const services = await this.serviceRepository.find({
+            where: { id: In(booking.serviceIds) },
+        });
 
-        // if (!services) {
-        //     throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Service not found');
-        // }
+        if (!services) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Service not found');
+        }
 
         // for (const service of services) {
         //     const isAvailable = await this.bookingRepository.findOne({
@@ -101,15 +114,15 @@ export class BookingService {
         // }
 
         const reservationCode = await StringUtils.randomGeneratePassword(8);
-
+        const totalDay = moment(booking.checkOut).startOf('day').diff(moment(booking.checkIn).startOf('day'), 'days') + 1;
         let total = 0;
         for (const room of rooms) {
-            total += room.price;
+            total += room.price * totalDay;
         }
 
-        // for (const service of services) {
-        //     total += service.price;
-        // }
+        for (const service of services) {
+            total += service.price;
+        }
 
         const data = {
             customerName: booking.customerName,
@@ -124,6 +137,7 @@ export class BookingService {
             rooms,
             // services
         }
+        // return await this.bookingRepository.create(data);
         return await this.bookingRepository.save(data);
     }
 
@@ -191,6 +205,7 @@ export class BookingService {
 
         const coupon = await this.couponRepository.findOne({
             where: { code: couponCode },
+            relations: ['promote']
         });
 
         if (!coupon) {
