@@ -13,7 +13,7 @@ export class BaseServiceTier {
     @Column()
     description: string;
 
-    @Column("text", { array: true })
+    @Column("text", { array: true, default: [] })
     images: string[];
 
     @Column()
