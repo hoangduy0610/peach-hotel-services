@@ -1,4 +1,4 @@
-import { Auth_RegiserDto } from '@/dtos/Auth_RegisterDto';
+import { Auth_RegisterDto } from '@/dtos/Auth_RegisterDto';
 import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -17,9 +17,15 @@ export class AuthController {
         return res.status(HttpStatus.OK).json(await this.authService.login(userAuthDto));
     }
 
+    @Post('/admin/signin')
+    @ApiOperation({ summary: 'Đăng nhập ADMIN', description: 'Api đăng nhập ADMIN' })
+    async authAdmin(@Req() req, @Res() res, @Body() userAuthDto: Auth_LoginDto) {
+        return res.status(HttpStatus.OK).json(await this.authService.loginAdmin(userAuthDto));
+    }
+
     @Post('/register')
     @ApiOperation({ summary: 'Đăng ký', description: 'Api đăng ký người dùng' })
-    async register(@Req() req, @Res() res, @Body() dto: Auth_RegiserDto) {
+    async register(@Req() req, @Res() res, @Body() dto: Auth_RegisterDto) {
         return res.status(HttpStatus.OK).json(await this.authService.register(dto));
     }
 

@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Auth_LoginDto } from "./Auth_LoginDto";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsString, IsNotEmpty } from "class-validator";
+import { EnumRoles } from "@/enums/EnumRoles";
 
-export class Auth_RegisterDto extends Auth_LoginDto {
+export class Staff_CreateDto extends Auth_LoginDto {
     @ApiProperty({ type: String, required: true })
     @IsString({ message: "Name must be a string" })
     @IsNotEmpty()
@@ -17,4 +18,8 @@ export class Auth_RegisterDto extends Auth_LoginDto {
     @IsString({ message: "Phone must be a string" })
     @IsNotEmpty()
     readonly phone: string;
+
+    @ApiProperty({ type: String, required: true, enum: Object.values(EnumRoles) })
+    @IsNotEmpty()
+    readonly role: EnumRoles;
 }

@@ -64,7 +64,7 @@ export class ServiceService {
             where: { id: id },
             relations: ['services', 'services.bookings', 'services.ratings'],
         });
-        await this.serviceTierRepository.delete(serviceTier);
+        await this.serviceTierRepository.remove(serviceTier);
     }
 
     async getServices(): Promise<Service[]> {

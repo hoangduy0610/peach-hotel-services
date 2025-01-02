@@ -19,8 +19,8 @@ export class RoomController {
     }
 
     @Get('/tier/:id')
-    async getRoomTierById(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.roomService.getRoomTierById(req.params.id));
+    async getRoomTierById(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.roomService.getRoomTierById(id));
     }
 
     @Put('/tier/:id')
@@ -29,8 +29,8 @@ export class RoomController {
     }
 
     @Delete('/tier/:id')
-    async deleteRoomTier(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.roomService.deleteRoomTier(req.params.id));
+    async deleteRoomTier(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.roomService.deleteRoomTier(id));
     }
 
     @Post('/')
@@ -53,17 +53,17 @@ export class RoomController {
     }
 
     @Get('/:id')
-    async getRoomById(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.roomService.getRoomById(req.params.id));
+    async getRoomById(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.roomService.getRoomById(id));
     }
 
     @Put('/:id')
-    async updateRoom(@Req() req, @Res() res, @Body() dto: Room_Dto) {
-        return res.status(HttpStatus.OK).json(await this.roomService.updateRoom(req.params.id, dto));
+    async updateRoom(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: Room_Dto) {
+        return res.status(HttpStatus.OK).json(await this.roomService.updateRoom(id, dto));
     }
 
     @Delete('/:id')
-    async deleteRoom(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.roomService.deleteRoom(req.params.id));
+    async deleteRoom(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.roomService.deleteRoom(id));
     }
 }

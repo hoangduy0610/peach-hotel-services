@@ -9,4 +9,5 @@ export enum MessageCode {
 	USER_INVALID_TOKEN = 'Token không hợp lệ hoặc đã hết hạn',
     
 	UNKNOWN_ERROR = 'Lỗi không xác định',
+    USER_BANNED = "Tài khoản đã bị khóa",
 }

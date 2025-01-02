@@ -13,6 +13,9 @@ export class BaseServiceTier {
     @Column()
     description: string;
 
+    @Column("text", { array: true })
+    images: string[];
+
     @Column()
     slot: number;
 

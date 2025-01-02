@@ -150,7 +150,22 @@ export class BookingService {
     }
 
     async deleteBooking(id: number): Promise<void> {
-        await this.bookingRepository.delete(id);
+        const booking = await this.bookingRepository.findOne({
+            where: { id: id },
+            relations: ['coupon', 'user'],
+        });
+
+        if (!booking) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Booking not found');
+        }
+
+        if (booking.status === 'PENDING') {
+            await this.refundPromote(booking);
+        }
+
+        await this.bookingRepository.delete({
+            id: id,
+        });
     }
 
     async getBookingById(id: number): Promise<Booking> {
@@ -182,12 +197,95 @@ export class BookingService {
             throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Coupon not found');
         }
 
+        if (coupon.status !== 'ACTIVE') {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Coupon is not active');
+        }
+
+        coupon.status = 'USED';
+
         const newBooking = {
             ...booking,
             coupon,
             total: booking.total - (coupon.promote.type === 'PERCENT' ? (booking.total * coupon.promote.discount / 100) : coupon.promote.discount),
         };
 
+        await this.couponRepository.save(coupon);
         return await this.bookingRepository.save(newBooking);
+    }
+
+    async applyPeachCoin(userId: number, id: number): Promise<Booking> {
+        const booking = await this.bookingRepository.findOne({
+            where: { id: id }
+        });
+
+        if (!booking) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Booking not found');
+        }
+
+        const user = await this.userRepository.findOne({
+            where: { id: userId },
+        });
+
+        if (!user) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'User not found');
+        }
+
+        const reduceAmount = user.peachCoin >= booking.total ? booking.total : user.peachCoin;
+
+        user.peachCoin -= reduceAmount;
+
+        const newBooking: Booking = {
+            ...booking,
+            total: booking.total - reduceAmount,
+            peachCoinApplied: booking.peachCoinApplied + reduceAmount,
+        };
+
+        await this.userRepository.save(user);
+        return await this.bookingRepository.save(newBooking);
+    }
+
+    async cancelBooking(id: number): Promise<Booking> {
+        const booking = await this.bookingRepository.findOne({
+            where: { id: id },
+            relations: ['coupon', 'user'],
+        });
+
+        if (!booking) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Booking not found');
+        }
+
+        if (booking.status !== 'PENDING') {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Booking cannot be cancelled due to status');
+        }
+
+        await this.refundPromote(booking);
+
+        const newBooking = {
+            ...booking,
+            status: 'CANCELLED',
+        };
+
+        return await this.bookingRepository.save(newBooking);
+    }
+
+    private async refundPromote(booking: Booking): Promise<void> {
+        if (booking.coupon) {
+            const coupon = await this.couponRepository.findOne({
+                where: { id: booking.coupon.id },
+            });
+
+            coupon.status = 'ACTIVE';
+
+            await this.couponRepository.save(coupon);
+        }
+
+        if (booking.peachCoinApplied > 0) {
+            const user = await this.userRepository.findOne({
+                where: { id: booking.user.id },
+            });
+
+            user.peachCoin += booking.peachCoinApplied;
+            await this.userRepository.save(user);
+        }
     }
 }

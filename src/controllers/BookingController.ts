@@ -1,10 +1,14 @@
 import { Booking_Dto } from '@/dtos/Booking_Dto';
+import { RoleGuard } from '@/guards/RoleGuard';
 import { BookingService } from '@/services/BookingService';
-import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Query, Req, Res } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('booking')
 @Controller('booking')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'), RoleGuard)
 export class BookingController {
     constructor(private readonly bookingService: BookingService) { }
 
@@ -14,8 +18,18 @@ export class BookingController {
     }
 
     @Post('/coupon/:id')
-    async applyCoupon(@Req() req, @Res() res, @Query('code') code: string) {
-        return res.status(HttpStatus.OK).json(await this.bookingService.applyCoupon(req.params.id, code));
+    async applyCoupon(@Req() req, @Res() res, @Query('code') code: string, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.bookingService.applyCoupon(id, code));
+    }
+
+    @Post('/peach-coin/:id')
+    async applyPeachCoin(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.bookingService.applyPeachCoin(req.user.id, id));
+    }
+
+    @Post('/cancel/:id')
+    async cancelBooking(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.bookingService.cancelBooking(id));
     }
 
     @Get('/list')
@@ -24,17 +38,17 @@ export class BookingController {
     }
 
     @Get('/:id')
-    async getBookingById(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.bookingService.getBookingById(req.params.id));
+    async getBookingById(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.bookingService.getBookingById(id));
     }
 
     @Put('/:id')
-    async updateBooking(@Req() req, @Res() res, @Body() dto: Booking_Dto) {
-        return res.status(HttpStatus.OK).json(await this.bookingService.updateBooking(req.params.id, dto));
+    async updateBooking(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: Booking_Dto) {
+        return res.status(HttpStatus.OK).json(await this.bookingService.updateBooking(id, dto));
     }
 
     @Delete('/:id')
-    async deleteBooking(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.bookingService.deleteBooking(req.params.id));
+    async deleteBooking(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.bookingService.deleteBooking(id));
     }
 }

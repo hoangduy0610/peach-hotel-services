@@ -5,6 +5,7 @@ import { AuthService } from '../services/AuthService';
 import { Constant } from '../commons/Constant';
 import { ApplicationException } from '../controllers/ExceptionController';
 import { MessageCode } from '../commons/MessageCode';
+import { EnumRoles } from '@/enums/EnumRoles';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -16,7 +17,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: any) {
-        const user = await this.authService.validateUser(payload);
+        const isAdmin = payload.role != EnumRoles.ROLE_USER;
+        const user = isAdmin ? await this.authService.validateAdmin(payload) : await this.authService.validateUser(payload);
         if (!user) {
             throw new ApplicationException(HttpStatus.UNAUTHORIZED, MessageCode.USER_NOT_FOUND);
         }

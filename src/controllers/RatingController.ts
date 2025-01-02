@@ -1,6 +1,6 @@
 import { Rating_Dto } from '@/dtos/Rating_Dto';
 import { RatingService } from '@/services/RatingService';
-import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Req, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('rating')
@@ -19,17 +19,17 @@ export class RatingController {
     }
 
     @Get('/:id')
-    async getRatingById(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.ratingService.getRatingById(req.params.id));
+    async getRatingById(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.ratingService.getRatingById(id));
     }
 
     @Put('/:id')
-    async updateRating(@Req() req, @Res() res, @Body() dto: Rating_Dto) {
-        return res.status(HttpStatus.OK).json(await this.ratingService.updateRating(req.params.id, dto));
+    async updateRating(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: Rating_Dto) {
+        return res.status(HttpStatus.OK).json(await this.ratingService.updateRating(id, dto));
     }
 
     @Delete('/:id')
-    async deleteRating(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.ratingService.deleteRating(req.params.id));
+    async deleteRating(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.ratingService.deleteRating(id));
     }
 }

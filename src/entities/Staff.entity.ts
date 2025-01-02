@@ -18,4 +18,10 @@ export class Staff {
 
     @Column({ unique: true })
     email: string;
+
+    @Column({ default: '' })
+    address: string;
+
+    @Column({ default: '' })
+    phone: string;
 }

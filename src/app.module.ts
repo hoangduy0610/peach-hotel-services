@@ -9,6 +9,10 @@ import { ServiceModule } from './modules/ServiceModule';
 import { PromoteModule } from './modules/PromoteModule';
 import { BookingModule } from './modules/BookingModule';
 import { RatingModule } from './modules/RatingModule';
+import { UserModule } from './modules/UserModule';
+import { StaffModule } from './modules/StaffModule';
+import { BlacklistModule } from './modules/BlacklistModule';
+import { PaymentModule } from './modules/PaymentModule';
 
 @Module({
   imports: [
@@ -24,8 +28,12 @@ import { RatingModule } from './modules/RatingModule';
     AuthModule,
     RoomModule,
     ServiceModule,
+    UserModule,
+    StaffModule,
+    BlacklistModule,
     PromoteModule,
     BookingModule,
+    PaymentModule,
     RatingModule,
   ]
 })

@@ -6,11 +6,13 @@ import { JwtStrategy } from 'src/guards/JWTStrategy';
 import { AuthService } from '../services/AuthService';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '@/entities/User.entity';
+import { Staff } from '@/entities/Staff.entity';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
             User,
+            Staff,
         ]),
         JwtModule.register({
             secret: Constant.JWT_SECRET,

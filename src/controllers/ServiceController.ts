@@ -1,5 +1,5 @@
 import { ServiceTier_Dto, Service_Dto } from '@/dtos/Service_Dto';
-import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Req, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ServiceService } from 'src/services/ServiceService';
 
@@ -19,18 +19,18 @@ export class ServiceController {
     }
 
     @Get('/tier/:id')
-    async getServiceTierById(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.serviceService.getServiceTierById(req.params.id));
+    async getServiceTierById(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.serviceService.getServiceTierById(id));
     }
 
     @Put('/tier/:id')
-    async updateServiceTier(@Req() req, @Res() res, @Body() dto: ServiceTier_Dto) {
-        return res.status(HttpStatus.OK).json(await this.serviceService.updateServiceTier(req.params.id, dto));
+    async updateServiceTier(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: ServiceTier_Dto) {
+        return res.status(HttpStatus.OK).json(await this.serviceService.updateServiceTier(id, dto));
     }
 
     @Delete('/tier/:id')
-    async deleteServiceTier(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.serviceService.deleteServiceTier(req.params.id));
+    async deleteServiceTier(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.serviceService.deleteServiceTier(id));
     }
 
     @Post('/')
@@ -44,17 +44,17 @@ export class ServiceController {
     }
 
     @Get('/:id')
-    async getServiceById(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.serviceService.getServiceById(req.params.id));
+    async getServiceById(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.serviceService.getServiceById(id));
     }
 
     @Put('/:id')
-    async updateService(@Req() req, @Res() res, @Body() dto: Service_Dto) {
-        return res.status(HttpStatus.OK).json(await this.serviceService.updateService(req.params.id, dto));
+    async updateService(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: Service_Dto) {
+        return res.status(HttpStatus.OK).json(await this.serviceService.updateService(id, dto));
     }
 
     @Delete('/:id')
-    async deleteService(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.serviceService.deleteService(req.params.id));
+    async deleteService(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.serviceService.deleteService(id));
     }
 }

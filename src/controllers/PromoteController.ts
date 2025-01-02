@@ -1,5 +1,5 @@
 import { Promote_Dto, Coupon_Dto } from '@/dtos/Promote_Dto';
-import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Req, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PromoteService } from 'src/services/PromoteService';
 
@@ -19,18 +19,18 @@ export class PromoteController {
     }
 
     @Get('/:id')
-    async getPromoteById(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.promoteService.getPromoteById(req.params.id));
+    async getPromoteById(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.promoteService.getPromoteById(id));
     }
 
     @Put('/:id')
-    async updatePromote(@Req() req, @Res() res, @Body() dto: Promote_Dto) {
-        return res.status(HttpStatus.OK).json(await this.promoteService.updatePromote(req.params.id, dto));
+    async updatePromote(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: Promote_Dto) {
+        return res.status(HttpStatus.OK).json(await this.promoteService.updatePromote(id, dto));
     }
 
     @Delete('/:id')
-    async deletePromote(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.promoteService.deletePromote(req.params.id));
+    async deletePromote(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.promoteService.deletePromote(id));
     }
 
     @Post('/coupon')
@@ -44,17 +44,17 @@ export class PromoteController {
     }
 
     @Get('/coupon/:id')
-    async getCouponById(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.promoteService.getCouponById(req.params.id));
+    async getCouponById(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.promoteService.getCouponById(id));
     }
 
     @Put('/coupon/:id')
-    async updateCoupon(@Req() req, @Res() res, @Body() dto: Coupon_Dto) {
-        return res.status(HttpStatus.OK).json(await this.promoteService.updateCoupon(req.params.id, dto));
+    async updateCoupon(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: Coupon_Dto) {
+        return res.status(HttpStatus.OK).json(await this.promoteService.updateCoupon(id, dto));
     }
 
     @Delete('/coupon/:id')
-    async deleteCoupon(@Req() req, @Res() res) {
-        return res.status(HttpStatus.OK).json(await this.promoteService.deleteCoupon(req.params.id));
+    async deleteCoupon(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.promoteService.deleteCoupon(id));
     }
 }

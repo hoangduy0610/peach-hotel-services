@@ -1,5 +1,5 @@
 
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User.entity';
 import { Booking } from './Booking.entity';
 
@@ -23,6 +23,6 @@ export class PaymentHistory {
     @ManyToOne(() => User, user => user.paymentHistory)
     user: User;
 
-    @OneToOne(() => Booking, booking => booking.paymentHistory)
+    @ManyToOne(() => Booking, booking => booking.paymentHistory)
     booking: Booking;
 }

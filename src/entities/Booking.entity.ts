@@ -19,6 +19,9 @@ export class Booking {
     @Column()
     customerPhone: string;
 
+    @Column({ default: 0 })
+    peachCoinApplied: number;
+
     @Column()
     checkIn: Date;
 
@@ -45,7 +48,7 @@ export class Booking {
     @JoinTable()
     services: Service[];
 
-    @OneToOne(() => PaymentHistory, item => item.booking)
+    @OneToMany(() => PaymentHistory, item => item.booking)
     paymentHistory: PaymentHistory;
 }
 
