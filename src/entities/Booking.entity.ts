@@ -28,6 +28,12 @@ export class Booking {
     @Column()
     checkOut: Date;
 
+    @Column({ nullable: true })
+    realCheckIn: Date;
+
+    @Column({ nullable: true })
+    realCheckOut: Date;
+
     @Column()
     total: number;
 

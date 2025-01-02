@@ -32,6 +32,16 @@ export class BookingController {
         return res.status(HttpStatus.OK).json(await this.bookingService.cancelBooking(id));
     }
 
+    @Put('/check-in/:id')
+    async checkIn(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.bookingService.checkIn(id));
+    }
+
+    @Put('/check-out/:id')
+    async checkOut(@Req() req, @Res() res, @Param('id') id: number) {
+        return res.status(HttpStatus.OK).json(await this.bookingService.checkOut(id));
+    }
+
     @Get('/list')
     async getBookings(@Req() req, @Res() res) {
         return res.status(HttpStatus.OK).json(await this.bookingService.getBookings(req.user));

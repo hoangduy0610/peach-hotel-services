@@ -303,4 +303,48 @@ export class BookingService {
             await this.userRepository.save(user);
         }
     }
+
+    async checkIn(id: number): Promise<Booking> {
+        const booking = await this.bookingRepository.findOne({
+            where: { id: id },
+        });
+
+        if (!booking) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Booking not found');
+        }
+
+        if (booking.status !== 'CONFIRMED') {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Booking cannot be checked in due to status');
+        }
+
+        const newBooking = {
+            ...booking,
+            status: 'CHECKED_IN',
+            realCheckIn: new Date(),
+        };
+
+        return await this.bookingRepository.save(newBooking);
+    }
+
+    async checkOut(id: number): Promise<Booking> {
+        const booking = await this.bookingRepository.findOne({
+            where: { id: id },
+        });
+
+        if (!booking) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Booking not found');
+        }
+
+        if (booking.status !== 'CHECKED_IN') {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Booking cannot be checked out due to status');
+        }
+
+        const newBooking = {
+            ...booking,
+            status: 'CHECKED_OUT',
+            realCheckOut: new Date(),
+        };
+
+        return await this.bookingRepository.save(newBooking);
+    }
 }
