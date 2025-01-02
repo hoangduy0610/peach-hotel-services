@@ -15,7 +15,9 @@ export class BlacklistService {
     }
 
     async getBlacklists(): Promise<Blacklist[]> {
-        return await this.blacklistRepository.find();
+        return await this.blacklistRepository.find({
+            relations: ['user']
+        });
     }
 
     async getBlacklistById(id: number): Promise<Blacklist> {
