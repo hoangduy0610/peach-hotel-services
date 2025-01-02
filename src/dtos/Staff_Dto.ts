@@ -24,6 +24,6 @@ export class Staff_CreateDto extends Auth_LoginDto {
     readonly role: EnumRoles;
 }
 
-export class Staff_UpdateDto extends OmitType(Staff_CreateDto, ['password', 'role']) {
-    
+export class Staff_UpdateDto extends OmitType(Staff_CreateDto, ['password']) {
+
 }
