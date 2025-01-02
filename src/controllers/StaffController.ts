@@ -1,4 +1,4 @@
-import { Staff_CreateDto } from '@/dtos/Staff_Dto';
+import { Staff_CreateDto, Staff_UpdateDto } from '@/dtos/Staff_Dto';
 import { RoleGuard } from '@/guards/RoleGuard';
 import { StaffService } from '@/services/StaffService';
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Req, Res, UseGuards } from '@nestjs/common';
@@ -28,7 +28,7 @@ export class StaffController {
     }
 
     @Put('/:id')
-    async updateStaff(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: Staff_CreateDto) {
+    async updateStaff(@Req() req, @Res() res, @Param('id') id: number, @Body() dto: Staff_UpdateDto) {
         return res.status(HttpStatus.OK).json(await this.staffService.updateStaff(id, dto));
     }
 

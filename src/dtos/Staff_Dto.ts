@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, OmitType } from "@nestjs/swagger";
 import { Auth_LoginDto } from "./Auth_LoginDto";
 import { IsString, IsNotEmpty } from "class-validator";
 import { EnumRoles } from "@/enums/EnumRoles";
@@ -22,4 +22,8 @@ export class Staff_CreateDto extends Auth_LoginDto {
     @ApiProperty({ type: String, required: true, enum: Object.values(EnumRoles) })
     @IsNotEmpty()
     readonly role: EnumRoles;
+}
+
+export class Staff_UpdateDto extends OmitType(Staff_CreateDto, ['password', 'role']) {
+    
 }

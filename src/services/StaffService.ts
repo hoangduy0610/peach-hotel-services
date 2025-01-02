@@ -1,6 +1,6 @@
 import { Constant } from '@/commons/Constant';
 import { ApplicationException } from '@/controllers/ExceptionController';
-import { Staff_CreateDto } from '@/dtos/Staff_Dto';
+import { Staff_CreateDto, Staff_UpdateDto } from '@/dtos/Staff_Dto';
 import { Staff } from '@/entities/Staff.entity';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -34,7 +34,7 @@ export class StaffService {
         return await this.staffRepository.save(data);
     }
 
-    async updateStaff(id: number, staff: Staff_CreateDto): Promise<Staff> {
+    async updateStaff(id: number, staff: Staff_UpdateDto): Promise<Staff> {
         const oldStaff = await this.staffRepository.findOne({
             where: { id: id },
         });
