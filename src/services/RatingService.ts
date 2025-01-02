@@ -19,7 +19,9 @@ export class RatingService {
     }
 
     async getRatings(): Promise<Rating[]> {
-        return await this.ratingRepository.find();
+        return await this.ratingRepository.find({
+            relations: ['user', 'room', 'service']
+        });
     }
 
     async getRatingById(id: number): Promise<Rating> {

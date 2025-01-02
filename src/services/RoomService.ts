@@ -92,7 +92,7 @@ export class RoomService {
                     (checkIn >= booking.checkIn && checkIn <= booking.checkOut) ||
                     (checkOut >= booking.checkIn && checkOut <= booking.checkOut) ||
                     (checkIn <= booking.checkIn && checkOut >= booking.checkOut)
-                );
+                ) && booking.status != "CANCELLED";
             });
 
             let condition = true;

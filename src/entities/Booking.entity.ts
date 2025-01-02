@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Room } from "./Room.entity";
 import { Service } from "./Service.entity";
 import { User } from "./User.entity";
@@ -39,6 +39,9 @@ export class Booking {
 
     @Column()
     status: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
 
     @ManyToOne(() => Coupon, item => item.booking)
     coupon: Coupon;
