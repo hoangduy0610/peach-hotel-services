@@ -13,6 +13,7 @@ import { UserModule } from './modules/UserModule';
 import { StaffModule } from './modules/StaffModule';
 import { BlacklistModule } from './modules/BlacklistModule';
 import { PaymentModule } from './modules/PaymentModule';
+import { FileModule } from './modules/FileModule';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PaymentModule } from './modules/PaymentModule';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => (configService.get('typeorm'))
     }),
+    FileModule,
     AuthModule,
     RoomModule,
     ServiceModule,
