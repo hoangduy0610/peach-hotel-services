@@ -20,7 +20,7 @@ export class Service {
     @Column()
     price: number;
 
-    @ManyToOne(() => ServiceTier, service => service.services)
+    @ManyToOne(() => ServiceTier, service => service.services, { onDelete: 'CASCADE' })
     serviceTier: ServiceTier;
 
     @ManyToMany(() => Booking, item => item.services)

@@ -20,9 +20,9 @@ export class PaymentHistory {
     @Column()
     status: string;
 
-    @ManyToOne(() => User, user => user.paymentHistory)
+    @ManyToOne(() => User, user => user.paymentHistory, { onDelete: 'CASCADE' })
     user: User;
 
-    @ManyToOne(() => Booking, booking => booking.paymentHistory)
+    @ManyToOne(() => Booking, booking => booking.paymentHistory, { onDelete: 'CASCADE' })
     booking: Booking;
 }

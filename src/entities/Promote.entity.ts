@@ -40,12 +40,12 @@ export class Coupon {
     @Column()
     status: string;
 
-    @ManyToOne(() => Promote, item => item.coupons)
+    @ManyToOne(() => Promote, item => item.coupons, { onDelete: 'CASCADE' })
     promote: Promote;
 
-    @ManyToOne(() => User, item => item.coupons)
+    @ManyToOne(() => User, item => item.coupons, { onDelete: 'CASCADE' })
     user: User;
 
-    @OneToMany(() => Booking, item => item.coupon)
+    @OneToMany(() => Booking, item => item.coupon, { onDelete: 'CASCADE' })
     booking: Booking;
 }

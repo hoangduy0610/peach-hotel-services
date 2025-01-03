@@ -7,7 +7,7 @@ export class Blacklist {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToOne(() => User, user => user.id)
+    @OneToOne(() => User, user => user.id, { onDelete: 'CASCADE' })
     @JoinColumn()
     user: User;
 

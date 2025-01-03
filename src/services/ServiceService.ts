@@ -68,7 +68,9 @@ export class ServiceService {
     }
 
     async getServices(): Promise<Service[]> {
-        return await this.serviceRepository.find();
+        return await this.serviceRepository.find({
+            relations: ['serviceTier']
+        });
     }
 
     async createService(service: Service_Dto): Promise<Service> {
@@ -120,7 +122,7 @@ export class ServiceService {
             relations: ['bookings', 'ratings'],
         });
 
-        await this.serviceRepository.delete(service);
+        await this.serviceRepository.remove(service);
     }
 
     async getServiceById(id: number): Promise<Service> {

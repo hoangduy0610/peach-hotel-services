@@ -66,11 +66,13 @@ export class PromoteService {
             relations: ['coupons'],
         });
 
-        await this.promoteRepository.delete(promote);
+        await this.promoteRepository.remove(promote);
     }
 
     async getCoupons(): Promise<Coupon[]> {
-        return await this.couponRepository.find();
+        return await this.couponRepository.find({
+            relations: ['promote']
+        });
     }
 
     async createCoupon(coupon: Coupon_Dto): Promise<Coupon> {
@@ -130,7 +132,10 @@ export class PromoteService {
     }
 
     async deleteCoupon(id: number): Promise<void> {
-        await this.couponRepository.delete(id);
+        const counpon = await this.couponRepository.findOne({
+            where: { id: id }
+        })
+        await this.couponRepository.remove(counpon);
     }
 
     async getCouponById(id: number): Promise<Coupon> {

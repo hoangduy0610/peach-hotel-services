@@ -46,14 +46,14 @@ export class Booking {
     @ManyToOne(() => Coupon, item => item.booking)
     coupon: Coupon;
 
-    @ManyToOne(() => User, item => item.bookings)
+    @ManyToOne(() => User, item => item.bookings, { onDelete: 'CASCADE' })
     user: User;
 
-    @ManyToMany(() => Room, item => item.bookings)
+    @ManyToMany(() => Room, item => item.bookings, { onDelete: 'CASCADE' })
     @JoinTable()
     rooms: Room[];
 
-    @ManyToMany(() => Service, item => item.bookings)
+    @ManyToMany(() => Service, item => item.bookings, { onDelete: 'CASCADE' })
     @JoinTable()
     services: Service[];
 
@@ -72,12 +72,12 @@ export class Rating {
     @Column()
     comment: string;
 
-    @ManyToOne(() => User, item => item.ratings)
+    @ManyToOne(() => User, item => item.ratings, { onDelete: 'CASCADE' })
     user: User;
 
-    @ManyToOne(() => Room, item => item.ratings)
+    @ManyToOne(() => Room, item => item.ratings, { onDelete: 'CASCADE' })
     room: Room;
 
-    @ManyToOne(() => Service, item => item.ratings)
+    @ManyToOne(() => Service, item => item.ratings, { onDelete: 'CASCADE' })
     service: Service;
 }

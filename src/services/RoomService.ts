@@ -75,7 +75,9 @@ export class RoomService {
     }
 
     async getRooms(): Promise<Room[]> {
-        return await this.roomRepository.find();
+        return await this.roomRepository.find({
+            relations: ['roomTier']
+        });
     }
 
     async filterRoomAvailable(checkInDStr: string, checkOutDStr: string, roomTierId?: number, roomGuestCapacity?: number): Promise<Room[]> {
@@ -158,13 +160,13 @@ export class RoomService {
             relations: ['bookings', 'ratings'],
         });
 
-        await this.roomRepository.delete(room);
+        await this.roomRepository.remove(room);
     }
 
     async getRoomById(id: number): Promise<Room> {
         return await this.roomRepository.findOne({
             where: { id: id },
-            relations: ['roomTier', "ratings"],
+            relations: ['roomTier', "ratings", "ratings.user"],
         });
     }
 }

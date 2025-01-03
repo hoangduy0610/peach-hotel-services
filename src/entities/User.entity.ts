@@ -35,15 +35,15 @@ export class User {
     @Column({ default: 0 })
     peachPoint: number;
 
-    @OneToMany(() => Booking, item => item.user)
+    @OneToMany(() => Booking, item => item.user, { onDelete: 'CASCADE' })
     bookings: Booking[];
 
-    @OneToMany(() => Coupon, item => item.user)
+    @OneToMany(() => Coupon, item => item.user, { onDelete: 'CASCADE' })
     coupons: Coupon[];
 
-    @OneToMany(() => Rating, item => item.user)
+    @OneToMany(() => Rating, item => item.user, { onDelete: 'CASCADE' })
     ratings: Rating[];
 
-    @OneToMany(() => PaymentHistory, item => item.user)
+    @OneToMany(() => PaymentHistory, item => item.user, { onDelete: 'CASCADE' })
     paymentHistory: PaymentHistory[];
 }

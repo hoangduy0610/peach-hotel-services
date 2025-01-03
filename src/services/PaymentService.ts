@@ -17,7 +17,9 @@ export class PaymentService {
     }
 
     async getPayments(): Promise<PaymentHistory[]> {
-        return await this.paymentRepository.find();
+        return await this.paymentRepository.find({
+            relations: ['booking']
+        });
     }
 
     async getPaymentById(id: number): Promise<PaymentHistory> {

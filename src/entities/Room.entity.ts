@@ -79,7 +79,7 @@ export class Room {
     @Column()
     isBusService: boolean;
 
-    @ManyToOne(() => RoomTier, item => item.rooms)
+    @ManyToOne(() => RoomTier, item => item.rooms, { onDelete: 'CASCADE' })
     roomTier: RoomTier;
 
     @ManyToMany(() => Booking, item => item.rooms)
