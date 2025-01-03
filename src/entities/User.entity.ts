@@ -5,27 +5,10 @@ import { CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Booking, Rating } from './Booking.entity';
 import { Coupon } from './Promote.entity';
 import { PaymentHistory } from './PaymentHistory.entity';
+import { BaseUser } from './BaseUser';
 
 @Entity()
-export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column()
-    password: string;
-
-    @Column()
-    name: string;
-
-    @Column({ default: '' })
-    address: string;
-
-    @Column({ default: '' })
-    phone: string;
-
-    @Column({ unique: true })
-    email: string;
-
+export class User extends BaseUser {
     @Column({ type: 'boolean', default: true })
     isActive: boolean;
 
