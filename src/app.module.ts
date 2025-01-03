@@ -14,6 +14,7 @@ import { StaffModule } from './modules/StaffModule';
 import { BlacklistModule } from './modules/BlacklistModule';
 import { PaymentModule } from './modules/PaymentModule';
 import { FileModule } from './modules/FileModule';
+import { ReportModule } from './modules/ReportModule';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { FileModule } from './modules/FileModule';
     BookingModule,
     PaymentModule,
     RatingModule,
+    ReportModule,
   ]
 })
 export class AppModule { }
