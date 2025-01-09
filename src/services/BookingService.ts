@@ -26,7 +26,7 @@ export class BookingService {
     async getBookings(user): Promise<Booking[]> {
         if (user?.role && user?.role !== EnumRoles.ROLE_USER) {
             return await this.bookingRepository.find({
-                relations: ['rooms', 'services', 'coupon', 'rooms.roomTier'],
+                relations: ['rooms', 'services', 'coupon', 'rooms.roomTier', 'paymentHistory', 'rooms.ratings.user'],
             });
         }
 
@@ -36,7 +36,7 @@ export class BookingService {
                     id: user.id,
                 }
             },
-            relations: ['rooms', 'services', 'coupon', 'rooms.roomTier'],
+            relations: ['rooms', 'services', 'coupon', 'rooms.roomTier', 'paymentHistory', 'rooms.ratings.user'],
         });
     }
 

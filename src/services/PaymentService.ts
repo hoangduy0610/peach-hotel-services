@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { createPdf } from '@leninlb/nestjs-html-to-pdf';
 import * as path from 'path';
-import moment from 'moment';
+import * as moment from 'moment';
 
 @Injectable()
 export class PaymentService {
@@ -137,7 +137,7 @@ export class PaymentService {
     async exportReceipt(id: number): Promise<any> {
         const payment = await this.paymentRepository.findOne({
             where: { id: id },
-            relations: ['booking', 'user'],
+            relations: ['booking', 'user', 'booking.rooms', 'booking.services', 'booking.coupon', 'booking.coupon.promote'],
         });
 
         if (!payment) {
@@ -148,7 +148,7 @@ export class PaymentService {
         const roomTotalDays = moment(payment.booking.checkOut).startOf('day').diff(moment(payment.booking.checkIn).startOf('day'), 'days');
 
         const totalBill = room.price * roomTotalDays + payment.booking.services.reduce((acc, service) => acc + service.price, 0);
-        const totalDiscount = payment.booking.coupon ? (payment.booking.coupon.promote.type === 'PERCENT' ? payment.booking.coupon.promote.discount * totalBill : payment.booking.coupon.promote.discount) : 0;
+        const totalDiscount = (payment.booking.coupon ? (payment.booking.coupon.promote.type === 'PERCENT' ? payment.booking.coupon.promote.discount * 0.01 * totalBill : payment.booking.coupon.promote.discount) : 0) + payment.booking.peachCoinApplied;
 
         const data = {
             bookingCode: payment.booking.reservationCode,
@@ -162,21 +162,45 @@ export class PaymentService {
                     id: 1,
                     name: room.name,
                     quantity: roomTotalDays,
-                    price: room.price,
-                    total: room.price * roomTotalDays,
+                    price: room.price.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    }),
+                    total: (room.price * roomTotalDays).toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    }),
                 },
                 ...payment.booking.services.map((service, index) => ({
                     id: index + 2,
                     name: service.name,
                     quantity: 1,
-                    price: service.price,
-                    total: service.price,
+                    price: service.price.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    }),
+                    total: service.price.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    }),
                 })),
             ],
-            discount: totalDiscount,
-            totalBill,
-            taxes: (totalBill - totalDiscount) * 0.1,
-            total: totalBill - totalDiscount + (totalBill - totalDiscount) * 0.1,
+            discount: totalDiscount.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+            }),
+            totalBill: totalBill.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+            }),
+            taxes: ((totalBill - totalDiscount) * 0.1).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+            }),
+            total: (totalBill - totalDiscount + (totalBill - totalDiscount) * 0.1).toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+            }),
         }
         const options = {
             format: 'A4',
