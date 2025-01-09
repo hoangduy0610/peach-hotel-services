@@ -22,6 +22,22 @@ export class PaymentController {
         return res.status(HttpStatus.OK).json(await this.paymentService.confirmPayment(id));
     }
 
+    @Post('/pdf/:id')
+    async generatePdf(@Req() req, @Res() res, @Param('id') id: number) {
+        const buffer = await this.paymentService.exportReceipt(id);
+        res.set({
+            // pdf
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=pdf.pdf`,
+            'Content-Length': buffer.length,
+            // prevent cache
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            Pragma: 'no-cache',
+            Expires: 0,
+        });
+        res.end(buffer);
+    }
+
     @Get('/list')
     async getPayments(@Req() req, @Res() res) {
         return res.status(HttpStatus.OK).json(await this.paymentService.getPayments());

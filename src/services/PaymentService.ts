@@ -6,6 +6,9 @@ import { User } from '@/entities/User.entity';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { createPdf } from '@leninlb/nestjs-html-to-pdf';
+import * as path from 'path';
+import moment from 'moment';
 
 @Injectable()
 export class PaymentService {
@@ -129,5 +132,67 @@ export class PaymentService {
         await this.bookingRepository.save(booking);
         await this.userRepository.save(user);
         return await this.paymentRepository.save(payment);
+    }
+
+    async exportReceipt(id: number): Promise<any> {
+        const payment = await this.paymentRepository.findOne({
+            where: { id: id },
+            relations: ['booking', 'user'],
+        });
+
+        if (!payment) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, 'Payment not found');
+        }
+
+        const room = payment.booking.rooms[0];
+        const roomTotalDays = moment(payment.booking.checkOut).startOf('day').diff(moment(payment.booking.checkIn).startOf('day'), 'days');
+
+        const totalBill = room.price * roomTotalDays + payment.booking.services.reduce((acc, service) => acc + service.price, 0);
+        const totalDiscount = payment.booking.coupon ? (payment.booking.coupon.promote.type === 'PERCENT' ? payment.booking.coupon.promote.discount * totalBill : payment.booking.coupon.promote.discount) : 0;
+
+        const data = {
+            bookingCode: payment.booking.reservationCode,
+            paymentDate: moment(payment.paymentDate).format('DD/MM/YYYY'),
+            clientName: payment.user.name,
+            clientEmail: payment.user.email,
+            clientPhone: payment.user.phone,
+
+            items: [
+                {
+                    id: 1,
+                    name: room.name,
+                    quantity: roomTotalDays,
+                    price: room.price,
+                    total: room.price * roomTotalDays,
+                },
+                ...payment.booking.services.map((service, index) => ({
+                    id: index + 2,
+                    name: service.name,
+                    quantity: 1,
+                    price: service.price,
+                    total: service.price,
+                })),
+            ],
+            discount: totalDiscount,
+            totalBill,
+            taxes: (totalBill - totalDiscount) * 0.1,
+            total: totalBill - totalDiscount + (totalBill - totalDiscount) * 0.1,
+        }
+        const options = {
+            format: 'A4',
+            displayHeaderFooter: false,
+            margin: {
+                left: '10mm',
+                top: '25mm',
+                right: '10mm',
+                bottom: '15mm',
+            },
+            // headerTemplate: `<div style="width: 100%; text-align: center;"><span style="font-size: 20px;">@saemhco CORP</span><br><span class="date" style="font-size:15px"><span></div>`,
+            // footerTemplate:
+            //     '<div style="width: 100%; text-align: center; font-size: 10px;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></div>',
+            landscape: false,
+        };
+        const filePath = path.join(process.cwd(), 'templates', 'pdf-invoice.hbs');;
+        return createPdf(filePath, options, data);
     }
 }

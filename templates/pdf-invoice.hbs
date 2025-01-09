@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .invoice-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            font-size: 1.8em;
+            margin: 0;
+            color: #444;
+        }
+        header p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .section-title {
+            font-weight: bold;
+            margin: 20px 0 10px;
+            text-transform: uppercase;
+            font-size: 1.1em;
+        }
+        .info {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .info strong {
+            display: inline-block;
+            width: 150px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        table td {
+            font-size: 0.9em;
+        }
+        .summary {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .summary p {
+            margin: 5px 0;
+        }
+        .summary .total {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #d9534f;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <header>
+            <h1>PEACH HOTEL</h1>
+            <p>112 Nguyễn Văn Trỗi, Quận 2, TP.HCM | T: +84 98 348 06 83 | Email: contact@demo.com</p>
+        </header>
+        
+        <div>
+            <div class="section-title">Business Information</div>
+            <div class="info">
+                <p><strong>Name:</strong> PEACH HOTEL</p>
+                <p><strong>Address:</strong> 112 Nguyễn Văn Trỗi, Quận 2, TP.HCM</p>
+                <p><strong>Hotline:</strong> +84 98 348 06 83</p>
+                <p><strong>Email:</strong> contact@demo.com</p>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">Customer Information</div>
+            <div class="info">
+                <p><strong>Code:</strong> {{bookingCode}}</p>
+                <p><strong>Full name:</strong> {{clientName}}</p>
+                <p><strong>Phone/Email:</strong> {{clientPhone}} / {{clientEmail}}</p>
+                <p><strong>Payment Date:</strong> {{paymentDate}}</p>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">Details</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>U. Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each items}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{name}}</td>
+                        <td>{{quantity}}</td>
+                        <td>{{price}} VND</td>
+                        <td>{{total}} VND</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="summary">
+            <p>Subtotal: <strong>{{totalBill}} VND</strong></p>
+            <p>Discount: <strong>{{discount}} VND</strong></p>
+            <p>Taxes: <strong>{{taxes}} VND</strong></p>
+            <p class="total">Total Payment: <strong>{{total}} VND</strong></p>
+        </div>
+
+        <footer>
+            Thank you for choosing Peach Hotel! <br>
+            See you again.
+        </footer>
+    </div>
+</body>
+</html>
