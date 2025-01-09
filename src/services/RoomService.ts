@@ -164,9 +164,15 @@ export class RoomService {
     }
 
     async getRoomById(id: number): Promise<Room> {
-        return await this.roomRepository.findOne({
+        const room = await this.roomRepository.findOne({
             where: { id: id },
-            relations: ['roomTier', "ratings", "ratings.user"],
+            relations: ['roomTier', 'ratings', 'ratings.user'],
         });
+    
+        if (room && room.ratings) {
+            room.ratings = room.ratings.sort((a, b) => b.score - a.score); // Sắp xếp ratings theo số sao giảm dần
+        }
+    
+        return room;
     }
 }
