@@ -114,7 +114,7 @@ export class BookingService {
         // }
 
         const reservationCode = await StringUtils.randomGeneratePassword(8);
-        const totalDay = moment(booking.checkOut).startOf('day').diff(moment(booking.checkIn).startOf('day'), 'days') + 1;
+        const totalDay = moment(booking.checkOut).startOf('day').diff(moment(booking.checkIn).startOf('day'), 'day');
         let total = 0;
         for (const room of rooms) {
             total += room.price * totalDay;
@@ -130,12 +130,12 @@ export class BookingService {
             checkIn: booking.checkIn,
             checkOut: booking.checkOut,
             reservationCode: reservationCode,
-            total,
+            total: Math.floor(total * 1.1),
             status: 'PENDING',
             coupon: null,
             user,
             rooms,
-            // services
+            services,
         }
         // return await this.bookingRepository.create(data);
         return await this.bookingRepository.save(data);

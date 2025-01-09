@@ -147,8 +147,10 @@ export class PaymentService {
         const room = payment.booking.rooms[0];
         const roomTotalDays = moment(payment.booking.checkOut).startOf('day').diff(moment(payment.booking.checkIn).startOf('day'), 'days');
 
+        const total = payment.booking.total;
         const totalBill = room.price * roomTotalDays + payment.booking.services.reduce((acc, service) => acc + service.price, 0);
-        const totalDiscount = (payment.booking.coupon ? (payment.booking.coupon.promote.type === 'PERCENT' ? payment.booking.coupon.promote.discount * 0.01 * totalBill : payment.booking.coupon.promote.discount) : 0) + payment.booking.peachCoinApplied;
+        const totalTaxes = Math.floor(totalBill / 10);
+        const totalDiscount = totalBill + totalTaxes - total;
 
         const data = {
             bookingCode: payment.booking.reservationCode,
@@ -193,11 +195,11 @@ export class PaymentService {
                 style: "currency",
                 currency: "VND",
             }),
-            taxes: ((totalBill - totalDiscount) * 0.1).toLocaleString("vi-VN", {
+            taxes: (totalTaxes).toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
             }),
-            total: (totalBill - totalDiscount + (totalBill - totalDiscount) * 0.1).toLocaleString("vi-VN", {
+            total: (total).toLocaleString("vi-VN", {
                 style: "currency",
                 currency: "VND",
             }),
